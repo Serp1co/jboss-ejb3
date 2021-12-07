@@ -1,6 +1,8 @@
 package com.redhat.example;
 
+import javax.ejb.EJB;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -13,8 +15,8 @@ public class RestService {
 
   private final Logger logger = Logger.getLogger(RestService.class.getName());
 
-  @Inject
-  ILocalEJB localBean;
+  @EJB
+  LocalEJBImpl localBean;
 
   @POST
   @Path("/test/{failFirst}/{failSecond}")
@@ -23,11 +25,23 @@ public class RestService {
     logger.info("starting transaction with: " +
         "first_fail=" + failFirst + " " +
         "second_fail=" + failSecond + " ");
+//    Model model = new Model();
+//    try {
+//      try {
+//        localBean.doAnotherAction(model, failFirst);
+//      } finally {
+//        localBean.doTheSecondAction(model, failSecond);
+//      }
+//    } catch (Exception e) {
+//      return Response.ok(e.getMessage()).build();
+//    }
     try {
-      return Response.ok(localBean.doAction(failFirst, failSecond)).build();
+      localBean.doAction(failFirst, failSecond);
+      return Response.ok().build();
     } catch (Exception e) {
-      return Response.accepted(e).build();
+      return Response.ok(e.getMessage()).build();
     }
   }
 
 }
+

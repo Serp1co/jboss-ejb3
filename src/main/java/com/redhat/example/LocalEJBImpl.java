@@ -1,8 +1,6 @@
 package com.redhat.example;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import javax.ejb.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
@@ -12,49 +10,63 @@ import java.util.logging.Logger;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
-public class LocalEJBImpl implements ILocalEJB {
+public class LocalEJBImpl {
 
   private final Logger logger = Logger.getLogger(LocalEJBImpl.class.getName());
 
   @PersistenceContext(unitName = "primary", type = PersistenceContextType.TRANSACTION)
   protected EntityManager entityManager;
 
-  public Model doAction(boolean failFirst, boolean failSecond) throws Exception {
+  @EJB
+  // This is used so that this ejb is called from another context
+  // to ensure the creation of a new transaction context
+  private LocalEJBImpl self;
+
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+  public void doAction(boolean failFirst, boolean failSecond) throws Exception {
     logger.info("Starting container transaction");
-    Model model = new Model();
+    String randomId = UUID.randomUUID().toString();
     try {
-      model = doAnotherAction(model, failFirst);
-    } finally{
-      model = doTheSecondAction(model, failSecond);
+      Model model = new Model();
+      self.doAnotherAction(model, randomId, failFirst);
+    } finally {
+      SecondModel model = new SecondModel();
+      self.doTheSecondAction(model, randomId, failSecond);
     }
-    logger.info("End container transaction, final model: " + model.toString());
-    return model;
+    logger.info("End container transaction");
   }
 
-  public Model doAnotherAction(Model model, boolean fail) throws Exception {
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+  public void doAnotherAction(Model model, String randomId, boolean fail) throws RollBackException {
     logger.info("Starting first transaction");
-    if (!fail) {
-      model.setRandom(UUID.randomUUID().toString());
-      entityManager.persist(model);
-    } else {
+    model.setRandom(randomId);
+    entityManager.persist(model);
+    logger.info("Persisted entity the first time: " + model);
+    if (fail) {
       logger.log(Level.SEVERE, "Exception on first transaction");
-      throw new Exception("failing first commit");
+      throw new RollBackException("failing first commit");
     }
     logger.info("End first transaction");
-    return model;
   }
 
-  public Model doTheSecondAction(Model model, boolean fail) throws Exception {
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+  public void doTheSecondAction(SecondModel model, String randomId, boolean fail) throws Exception {
     logger.info("Starting second transaction");
-    if (!fail) {
-      model.setUpdated("TRUE");
-      entityManager.persist(model);
-    } else {
+    model.setValue(randomId);
+    entityManager.persist(model);
+    logger.info("Persisted entity the second time: " + model);
+    if (fail) {
       logger.log(Level.SEVERE, "Exception on second transaction");
-      throw new Exception("failing second commit");
+      throw new RollBackException("failing second commit");
     }
-    logger.info("End first transaction");
-    return model;
+    logger.info("End second transaction");
+  }
+
+  @ApplicationException(rollback = true)
+  public static class RollBackException extends Exception {
+    RollBackException(String msg) {
+      super(msg);
+    }
   }
 
 }
