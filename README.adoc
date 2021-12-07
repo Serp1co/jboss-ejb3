@@ -1,0 +1,37 @@
+=== What are Container Managed Transactions?
+
+Prior to EJB, getting the right incantation to ensure sound transactional operation of the business logic was a highly specialized skill. Although this still holds true to a great extent, EJB has provided a series of improvements to allow simplified transaction demarcation notation that is therefore easier to read and test.
+
+With CMT, the EJB container sets the boundaries of a transaction. This differs from BMT (bean-managed transactions), where the developer is responsible for initiating and completing a transaction using the `begin`, `commit`, and `rollback` methods on a `javax.transaction.UserTransaction`.
+
+=== What Makes This an Example of Container Managed Transactions?
+
+Take a look at `LocalEJBImpl`. You can see that this stateless session bean has been marked up with the `@javax.ejb.TransactionAttribute` annotation.
+
+The following options are available for this annotation.
+
+Required:: As demonstrated in the quickstart. If a transaction does not already exist, this will initiate a transaction and complete it for you, otherwise the business logic will be integrated into the existing transaction.
+RequiresNew:: If there is already a transaction running, it will be suspended, the work performed within a new transaction which is completed at exit of the method and then the original transaction resumed.
+Mandatory:: If there is no transaction running, calling a business method with this annotation will result in an error.
+NotSupported:: If there is a transaction running, it will be suspended and no transaction will be initiated for this business method.
+Supports:: This will run the method within a transaction if a transaction exists, alternatively, if there is no transaction running, the method will not be executed within the scope of a transaction.
+Never:: If the client has a transaction running and does not suspend it but calls a method annotated with Never then an EJB exception will be raised.
+
+
+
+=== How to use this:
+
+==== DOCKER
+ Network:: create a network to bridge the database with the application server
+ Postgres:: you can use the dockerfile provided to create the database, remember to publish it's port to 5432 and expose over the network
+ Jboss:: run the wildfly docker image exposed over the network and publish both 9990 and 8080 ports. Create the datasource in your preferred way, then deploy the application.
+
+DOCKER TIPS:
+
+ run jboss image: docker run -d -p 8080:8080 -p 9990:9990 -it jboss/wildfly /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0
+
+ run postgres image: docker run -d --env POSTGRES_PASSWORD=mysecretpassword --publish 5432:5432 postgre
+
+==== Local
+ Jboss:: download the 7.3 version and updated it to the 7.3.6, remember to run it under java 11. Create the datasource in your preferred way, then deploy the application.
+ Postgres:: you can use the dockerfile provided to create the database or create it yourself, remember to publish it's port to 5432

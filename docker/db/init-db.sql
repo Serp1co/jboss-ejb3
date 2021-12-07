@@ -1,10 +1,4 @@
-CREATE USER test WITH password 'password';
-CREATE DATABASE test;
-GRANT ALL PRIVILEGES ON DATABASE test TO test;
-
-\connect test test;
-
-create schema IF NOT EXISTS TEST_SCHEMA AUTHORIZATION test;
+create schema IF NOT EXISTS TEST_SCHEMA;
 
 show search_path;
 SET search_path TO TEST_SCHEMA;

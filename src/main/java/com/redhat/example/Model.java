@@ -1,11 +1,12 @@
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+package com.redhat.example;
 
-@Entity
+import javax.persistence.*;
+
+@Table(schema = "test_schema")
+@Entity(name = "model")
 public class Model {
 
-  @Id @GeneratedValue
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String random;
   private String updated;
@@ -35,5 +36,14 @@ public class Model {
 
   public void setUpdated(String updated) {
     this.updated = updated;
+  }
+
+  @Override
+  public String toString() {
+    return "Model{" +
+        "id=" + id +
+        ", random='" + random + '\'' +
+        ", updated='" + updated + '\'' +
+        '}';
   }
 }

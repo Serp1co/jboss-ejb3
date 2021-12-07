@@ -1,17 +1,19 @@
+package com.redhat.example;
+
 import javax.ejb.Local;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 @Local
-public interface ILocalBean {
+public interface ILocalEJB {
 
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-  void doAction();
+  Model doAction(boolean failFirst, boolean failSecond) throws Exception;
 
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-  Model doAnotherAction();
+  Model doAnotherAction(Model model, boolean fail) throws Exception;
 
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-  void doTheSecondAction(Model model);
+  Model doTheSecondAction(Model model, boolean fail) throws Exception;
 
 }
