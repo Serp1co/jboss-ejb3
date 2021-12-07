@@ -33,5 +33,5 @@ DOCKER TIPS:
  run postgres image: docker run -d --env POSTGRES_PASSWORD=mysecretpassword --publish 5432:5432 postgre
 
 ==== Local
+ Postgres:: you can use the dockerfile provided to create the database image (remember to publish it's port to 5432), create it yourself or provide your remote instance
  Jboss:: download the 7.3 version and updated it to the 7.3.6, remember to run it under java 11. Create the datasource in your preferred way, then deploy the application.
- Postgres:: you can use the dockerfile provided to create the database or create it yourself, remember to publish it's port to 5432
