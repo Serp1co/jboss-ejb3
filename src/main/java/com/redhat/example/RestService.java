@@ -25,16 +25,6 @@ public class RestService {
     logger.info("starting transaction with: " +
         "first_fail=" + failFirst + " " +
         "second_fail=" + failSecond + " ");
-//    Model model = new Model();
-//    try {
-//      try {
-//        localBean.doAnotherAction(model, failFirst);
-//      } finally {
-//        localBean.doTheSecondAction(model, failSecond);
-//      }
-//    } catch (Exception e) {
-//      return Response.ok(e.getMessage()).build();
-//    }
     try {
       localBean.doAction(failFirst, failSecond);
       return Response.ok().build();

@@ -9,7 +9,6 @@ public class Model {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String random;
-  private String updated;
 
   public Model() {
   }
@@ -30,20 +29,11 @@ public class Model {
     this.random = random;
   }
 
-  public String getUpdated() {
-    return updated;
-  }
-
-  public void setUpdated(String updated) {
-    this.updated = updated;
-  }
-
   @Override
   public String toString() {
     return "Model{" +
         "id=" + id +
         ", random='" + random + '\'' +
-        ", updated='" + updated + '\'' +
         '}';
   }
 }
