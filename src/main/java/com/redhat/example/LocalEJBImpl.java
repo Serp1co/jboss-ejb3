@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
-public class LocalEJBImpl {
+public class LocalEJBImpl implements ILocalEJB {
 
   private final Logger logger = Logger.getLogger(LocalEJBImpl.class.getName());
 
@@ -20,8 +20,9 @@ public class LocalEJBImpl {
   @EJB
   // This is used so that this ejb is called from another context
   // to ensure the creation of a new transaction context
-  private LocalEJBImpl self;
+  private ILocalEJB self;
 
+  @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void doAction(boolean failFirst, boolean failSecond) throws Exception {
     logger.info("Starting container transaction");
@@ -36,6 +37,7 @@ public class LocalEJBImpl {
     logger.info("End container transaction");
   }
 
+  @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void doAnotherAction(Model model, String randomId, boolean fail) throws RollBackException {
     logger.info("Starting first transaction");
@@ -49,8 +51,9 @@ public class LocalEJBImpl {
     logger.info("End first transaction");
   }
 
+  @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-  public void doTheSecondAction(SecondModel model, String randomId, boolean fail) throws Exception {
+  public void doTheSecondAction(SecondModel model, String randomId, boolean fail) throws RollBackException {
     logger.info("Starting second transaction");
     model.setValue(randomId);
     entityManager.persist(model);
@@ -62,11 +65,5 @@ public class LocalEJBImpl {
     logger.info("End second transaction");
   }
 
-  @ApplicationException(rollback = true)
-  public static class RollBackException extends Exception {
-    RollBackException(String msg) {
-      super(msg);
-    }
-  }
 
 }

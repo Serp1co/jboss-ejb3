@@ -16,7 +16,7 @@ public class RestService {
   private final Logger logger = Logger.getLogger(RestService.class.getName());
 
   @EJB
-  LocalEJBImpl localBean;
+  ILocalEJB localBean;
 
   @POST
   @Path("/test/{failFirst}/{failSecond}")
