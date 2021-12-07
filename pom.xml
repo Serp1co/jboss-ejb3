@@ -40,10 +40,13 @@
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
+
+        <!-- Import the WS RS annotations -->
         <dependency>
             <groupId>org.jboss.spec.javax.ws.rs</groupId>
             <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
             <version>2.0.1.Final-redhat-00001</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -60,40 +63,35 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
+
         <!-- Import the JPA API, we use provided scope as the API is included in JBoss EAP -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
             <version>2.2.3</version>
+            <scope>provided</scope>
         </dependency>
+
         <!-- Import the EJB API, we use provided scope as the API is included in JBoss EAP -->
         <dependency>
             <groupId>org.jboss.spec.javax.ejb</groupId>
             <artifactId>jboss-ejb-api_3.2_spec</artifactId>
             <version>2.0.0.Final</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- Import the JSF API, we use provided scope as the API is included in JBoss EAP -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.faces</groupId>
-            <artifactId>jboss-jsf-api_2.3_spec</artifactId>
-            <version>3.0.0.SP04</version>
-        </dependency>
-        <!-- Import the JMS API, we use provided scope as the API is included in JBoss EAP -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.jms</groupId>
-            <artifactId>jboss-jms-api_2.0_spec</artifactId>
-            <version>2.0.0.Final</version>
-        </dependency>
+
         <!-- Import the JTA API, we use provided scope as the API is included in JBoss EAP -->
         <dependency>
             <groupId>org.jboss.spec.javax.transaction</groupId>
             <artifactId>jboss-transaction-api_1.3_spec</artifactId>
             <version>2.0.0.Final</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.annotation</groupId>
             <artifactId>jboss-annotations-api_1.3_spec</artifactId>
             <version>2.0.1.Final</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
@@ -104,18 +102,5 @@
     </properties>
     <build>
         <finalName>${project.artifactId}</finalName>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-ejb-plugin</artifactId>
-                    <version>${version.ejb.plugin}</version>
-                    <configuration>
-                        <!-- Tell Maven we are using EJB -->
-                        <ejbVersion>3.2</ejbVersion>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 </project>
